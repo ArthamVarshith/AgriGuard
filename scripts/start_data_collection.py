@@ -23,13 +23,13 @@ def collect_satellite_data():
     print("\n🛰️  COLLECTING SATELLITE DATA")
     print("-" * 40)
     
-    # Define Mysore region (major tomato growing area in Karnataka)
-    mysore_region = ee.Geometry.Rectangle([76.5, 12.2, 77.0, 12.7])
-    print("📍 Target region: Mysore, Karnataka (Tomato belt)")
+    # Define Amaravati region (major agricultural area in Andhra Pradesh)
+    amaravati_region = ee.Geometry.Rectangle([80.20, 16.30, 80.80, 16.80])
+    print("📍 Target region: Amaravati, Andhra Pradesh")
     
     # Get Sentinel-2 collection (using updated collection)
     collection = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
-                 .filterBounds(mysore_region)
+                 .filterBounds(amaravati_region)
                  .filterDate('2024-06-01', '2024-11-30')
                  .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
                  .sort('system:time_start'))
@@ -40,7 +40,7 @@ def collect_satellite_data():
     if image_count == 0:
         print("⚠️  No images found. Expanding date range...")
         collection = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
-                     .filterBounds(mysore_region)
+                     .filterBounds(amaravati_region)
                      .filterDate('2024-01-01', '2024-12-31')
                      .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 30))
                      .sort('system:time_start'))
@@ -84,7 +84,7 @@ def collect_satellite_data():
     
     stats = sample_with_indices.select(['NDVI', 'EVI', 'SAVI']).reduceRegion(
         reducer=ee.Reducer.mean(),
-        geometry=mysore_region,
+        geometry=amaravati_region,
         scale=100,
         maxPixels=1e9
     )
@@ -95,7 +95,7 @@ def collect_satellite_data():
         if value is not None:
             print(f"  🌱 {key}: {value:.3f}")
     
-    return processed_collection, mysore_region
+    return processed_collection, amaravati_region
 
 def start_satellite_export(collection, region):
     """Start export of satellite data to Google Drive"""
@@ -111,7 +111,7 @@ def start_satellite_export(collection, region):
     # Create export task
     task = ee.batch.Export.image.toDrive(
         image=composite.select(export_bands),
-        description='agriguard_mysore_satellite_data',
+        description='agriguard_amaravati_satellite_data',
         folder='AgriGuard_Data',
         region=region,
         scale=10,  # 10 meter resolution
@@ -150,7 +150,7 @@ def generate_weather_data():
         month = date.month
         day_of_year = date.dayofyear
         
-        # Seasonal temperature pattern for Karnataka
+        # Seasonal temperature pattern for Andhra Pradesh
         base_temp = 25 + 5 * np.sin(2 * np.pi * (month - 4) / 12)
         temp_max = base_temp + np.random.normal(5, 2)
         temp_min = base_temp - np.random.normal(5, 2)
@@ -195,7 +195,7 @@ def generate_weather_data():
     
     # Save to CSV
     os.makedirs('data/raw', exist_ok=True)
-    output_file = 'data/raw/mysore_weather_2024.csv'
+    output_file = 'data/raw/amaravati_weather_2024.csv'
     weather_df.to_csv(output_file, index=False)
     
     print(f"💾 Weather data saved to: {output_file}")
@@ -222,7 +222,7 @@ def main():
     print("🌾 AGRIGUARD DATA COLLECTION PIPELINE")
     print("=" * 60)
     print("🎯 Collecting multi-modal data for crop disease detection")
-    print("📍 Focus: Mysore, Karnataka (Major tomato growing region)")
+    print("📍 Focus: Amaravati, Andhra Pradesh")
     print()
     
     # Initialize Earth Engine

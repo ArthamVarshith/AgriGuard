@@ -72,6 +72,24 @@ docker-compose up -d
 open http://localhost:8501
 ```
 
+### Build Real Dataset (No Manual CSV Needed)
+```bash
+# 1) Install dependencies
+pip install -r requirements.txt
+
+# 2) Authenticate Earth Engine once (if not already done)
+python -c "import ee; ee.Authenticate()"
+
+# 3) Auto-build real satellite + weather dataset
+python scripts/build_real_training_dataset.py --samples-per-region 120 --start-date 2024-01-01 --end-date 2025-12-31
+
+# 4) Train model (auto-picks real dataset if present)
+python src/models/multi_modal_cnn.py
+
+# 5) Run demo
+streamlit run app/agriguard_demo.py
+```
+
 ### MLflow Tracking
 ```bash
 # View experiment tracking

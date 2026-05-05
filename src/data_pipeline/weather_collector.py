@@ -9,7 +9,7 @@ class WeatherDataCollector:
         """Initialize weather data collector
         Get free API key from: https://openweathermap.org/api
         """
-        self.api_key = api_key or "your_openweather_api_key"
+        self.api_key = api_key or "cd6a69baff4a2208331d5068f61639bf"
         self.base_url = "http://api.openweathermap.org/data/2.5"
         
     def get_historical_weather(self, lat, lon, start_date, end_date):
@@ -18,7 +18,7 @@ class WeatherDataCollector:
         # For now, simulate weather data (replace with real API calls)
         dates = pd.date_range(start_date, end_date, freq='D')
         
-        # Simulate realistic weather patterns for Karnataka
+        # Simulate realistic weather patterns for Andhra Pradesh
         np.random.seed(42)
         weather_data = []
         
@@ -94,15 +94,15 @@ class WeatherDataCollector:
 if __name__ == "__main__":
     weather_collector = WeatherDataCollector()
     
-    # Get weather for Mysore region
-    mysore_weather = weather_collector.get_historical_weather(
-        12.45, 76.75,  # Mysore coordinates
+    # Get weather for Amaravati region
+    amaravati_weather = weather_collector.get_historical_weather(
+        16.51, 80.52,  # Amaravati coordinates
         '2024-06-01', '2024-12-01'
     )
     
     # Calculate risk factors
-    mysore_weather = weather_collector.calculate_disease_risk_factors(mysore_weather)
+    amaravati_weather = weather_collector.calculate_disease_risk_factors(amaravati_weather)
     
     print("Weather data collected!")
-    print(mysore_weather.head())
-    print(f"Average disease favorability: {mysore_weather['disease_favorability'].mean():.3f}")
+    print(amaravati_weather.head())
+    print(f"Average disease favorability: {amaravati_weather['disease_favorability'].mean():.3f}")
